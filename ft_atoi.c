@@ -1,6 +1,6 @@
 #include "philo.h"
 
-long	ft_atoi(const char *str)
+long	ft_atoi(char *str)
 {
 	int		i;
 	long	signe;
