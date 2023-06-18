@@ -12,7 +12,8 @@ typedef struct s_philo
 	int				id;
 	int				n_philo;
 	unsigned long	last_meal;
-	pthread_mutex_t	*mutex;
+	pthread_mutex_t	*fork;
+	pthread_mutex_t	*print;
 	size_t			n_meals;
 	size_t			check;
 	size_t			max_tto_eat;
@@ -21,7 +22,7 @@ typedef struct s_philo
 	size_t			time_to_sleep;
 	pthread_t		philos;
 	struct s_philo	*next;
-} t_philo;
+} 		t_philo;
 
 // ---------------- LIST -----------------
 
