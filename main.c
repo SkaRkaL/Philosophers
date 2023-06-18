@@ -22,20 +22,41 @@ t_philo *ft_lstnew(int ac, char **av)
 	return (philo);
 }
 
+unsigned int	f_current(void)
+{
+	struct timeval	time;
+
+	gettimeofday(&time, NULL);
+	return ((time.tv_usec / 1000) + (time.tv_sec * 1000));
+}
+
+// int		my_sleep(t_philo *philo, unsigned int timetodo)
+int		my_sleep(unsigned int timetodo)
+{
+	unsigned int	time;
+
+	time = f_current();
+	while (1)
+	{
+		if (f_current() - time >= timetodo)
+			return (1);
+		usleep(100);
+	}
+	return (0);
+}
+
 void *routin(void *arg)
 {
-	t_philo *tmp;
-	int f = 0;
-	tmp = (t_philo *)arg;
-	pthread_mutex_lock(tmp->mutex);
-	for (int i = 1; i < 4; i++)
+	t_philo *philo;
+	philo = (t_philo *)arg;
+
+	if (philo->id % 2 == 0)
+		usleep(20);
+	philo->last_meal = in_time();
+	while (1)
 	{
-		f++;
-		printf("------| F 9abla >> %d |-------\n", f);
+		// STILL UPDATING ....
 	}
-	printf("\nThread Finished  < 1 >\n-");
-	printf("\n||||||||||||||||||||||||||||||||||||\n\n");
-	pthread_mutex_unlock(tmp->mutex);
 	return NULL;
 }
 
