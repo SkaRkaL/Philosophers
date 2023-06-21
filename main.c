@@ -34,15 +34,15 @@ void *routin(void *arg)
 	t_philo *philo;
 	
 	philo = (t_philo *)arg;
+	philo->last_meal = in_time();
 	while (1)
 	{
 		// STILL UPDATING ....
-		philo->last_meal = in_time();
 		pthread_mutex_lock(&(philo->fork));
-		print(in_time(), "Has Locking a Fork", philo);
+		print(in_time(), "has taken a fork", philo);
 
 		pthread_mutex_lock(&(philo->next->fork));
-		print(in_time(), "Has Locking a Fork", philo);
+		print(in_time(), "has taken a fork", philo);
 
 		philo->last_meal = in_time();
 		print(in_time(), "is eating", philo);
@@ -50,14 +50,16 @@ void *routin(void *arg)
 
 		pthread_mutex_unlock(&(philo->next->fork));
 		pthread_mutex_unlock(&(philo->fork));
-		if (philo->max_tto_eat)
-			philo->n_meals++;
-		if (philo->max_tto_eat && philo->max_tto_eat <= philo->n_meals)
+		philo->n_meals++;
+		if (philo->max_tto_eat && philo->max_tto_eat * philo->id <= philo->n_meals)
+		{
+			philo->check = 1;
 			break ;
-		print(in_time(), "Sleeping", philo);
+		}
+		print(in_time(), "is sleeping", philo);
 		usleep(philo->time_to_sleep * 1000);
 
-		print(in_time(), "Thinking", philo);
+		print(in_time(), "is thinking", philo);
 	}
 	return NULL;
 }
@@ -75,7 +77,7 @@ void init_philo(t_philo *philo, int n_philo)
 
 	while (i < n_philo)
 	{
-		usleep(1000);
+		usleep(1000);	
 		tmp->print = &print;
 		pthread_mutex_init(&(tmp->fork), NULL);
 		tmp = tmp->next;
@@ -91,14 +93,19 @@ void init_philo(t_philo *philo, int n_philo)
 		i++;
 	}
 	usleep(philo->time_to_eat);
+	unsigned long long res;
 	while (1)
 	{
-		if (philo->time_to_die <= in_time() - philo->last_meal)
+		res = in_time() - philo->last_meal;
+		if (philo->check == 1)
+			break ;
+		else if (philo->time_to_die <= res)
 		{
 			pthread_mutex_lock(philo->print);
-			printf("philo %d died.\n", philo->id);
-			return;
+			printf("%zu\t%d died\n",in_time(), philo->id);
+			return ;
 		}
+		usleep(20);
 		philo = philo->next;
 	}
 }
