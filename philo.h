@@ -10,12 +10,13 @@
 typedef struct s_philo
 {
 	int				id;
+	int				done;
 	int				n_philo;
 	unsigned long long			last_meal;
 	pthread_mutex_t	fork;
 	pthread_mutex_t	*print;
 	unsigned long long			n_meals;
-	unsigned long long			check;
+	int							check;
 	unsigned long long			max_tto_eat;
 	unsigned long long			time_to_die;
 	unsigned long long			time_to_eat;
