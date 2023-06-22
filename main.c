@@ -64,7 +64,7 @@ void *routin(void *arg)
 	return NULL;
 }
 
-void init_philo(t_philo *philo, int n_philo)
+void init_philo(t_philo *philo)
 {
 	t_philo *tmp;
 	pthread_mutex_t print;
@@ -75,7 +75,7 @@ void init_philo(t_philo *philo, int n_philo)
 	i = 0;
 	tmp = philo;
 
-	while (i < n_philo)
+	while (i < philo->n_philo)
 	{
 		usleep(1000);	
 		tmp->print = &print;
@@ -84,7 +84,7 @@ void init_philo(t_philo *philo, int n_philo)
 		i++;
 	}
 	i = 0;
-	while (i < n_philo)
+	while (i < philo->n_philo)
 	{
 		if (pthread_create(&(tmp)->philos, NULL, &routin, tmp) == -1)
 			return ;
@@ -126,6 +126,6 @@ int main(int ac, char **av)
 		i++;
 	}
 	ft_lstlast(philo)->next = philo;
-	init_philo(philo, n_philos);
+	init_philo(philo);
 	return (0);
 }
