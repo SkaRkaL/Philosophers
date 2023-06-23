@@ -1,6 +1,6 @@
 #include "philo.h"
 
-int	all_ate(t_philo *philo)
+int check_eating(t_philo *philo)
 {
 	int i;
 	int ate;
