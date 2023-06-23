@@ -35,6 +35,8 @@ void ft_lstadd_back(t_philo **lst, t_philo *new);
 // ---------------------------------------
 
 unsigned long	in_time(void);
+int	my_sleep(unsigned int t_todo);
+int	all_ate(t_philo *philo);
 
 // ---------------------------------------
 
