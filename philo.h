@@ -13,10 +13,12 @@ typedef struct s_philo
 	int done;
 	int n_philo;
 	unsigned long long last_meal;
+	unsigned long long current;
 	pthread_mutex_t fork;
 	pthread_mutex_t *print;
+	pthread_mutex_t eat;
 	unsigned long long n_meals;
-	int check;
+	// int check;
 	unsigned long long max_tto_eat;
 	unsigned long long time_to_die;
 	unsigned long long time_to_eat;
@@ -34,8 +36,9 @@ void ft_lstadd_back(t_philo **lst, t_philo *new);
 
 // ---------------------------------------
 
-unsigned long in_time(void);
-int my_sleep(unsigned int t_todo);
+unsigned long in_time(unsigned long var);
+unsigned long get_time(void);
+int my_sleep(t_philo *philo, unsigned int t_todo);
 int check_eating(t_philo *philo);
 
 // ---------------------------------------

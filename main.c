@@ -12,7 +12,8 @@ t_philo *ft_lstnew(int ac, char **av)
 	philo->time_to_eat = ft_atoi(av[3]);
 	philo->time_to_sleep = ft_atoi(av[4]);
 	philo->n_meals = 0;
-	philo->check = 0;
+	philo->last_meal = 0;
+	// philo->check = 0;
 	philo->max_tto_eat = 0;
 	if (ac == 6)
 		philo->max_tto_eat = ft_atoi(av[5]);
@@ -22,46 +23,57 @@ t_philo *ft_lstnew(int ac, char **av)
 	return (philo);
 }
 
-void	print(size_t time, char *doing, t_philo *philo)
+void print(char *doing, t_philo *philo)
 {
-		pthread_mutex_lock(philo->print);
-		printf("%zu	%d %s\n", time, philo->id, doing);
-		pthread_mutex_unlock(philo->print);
+	pthread_mutex_lock(philo->print);
+	printf("%zu	%d %s\n", in_time(philo->current), philo->id, doing);
+	pthread_mutex_unlock(philo->print);
 }
 
 void *routin(void *arg)
 {
 	t_philo *philo;
-	
+
 	philo = (t_philo *)arg;
-	philo->last_meal = in_time();
+	// philo->last_meal = get_time();
+	// if(philo->id % 2)
+	// 	usleep(philo->time_to_eat * 1000);
 	while (1)
 	{
 		// STILL UPDATING ....
 		pthread_mutex_lock(&(philo->fork));
-		print(in_time(), "has taken a fork", philo);
+		print("has taken a fork", philo);
 
 		pthread_mutex_lock(&(philo->next->fork));
-		print(in_time(), "has taken a fork", philo);
-
-		philo->last_meal = in_time();
-		print(in_time(), "is eating", philo);
-		usleep(philo->time_to_eat * 1000);
-
+		print("has taken a fork", philo);
+		pthread_mutex_lock(&(philo)->eat);
+		philo->last_meal = get_time();
+		philo->n_meals++;
+		pthread_mutex_unlock(&(philo)->eat);
+		print("is eating", philo);
+		my_sleep(philo, philo->time_to_eat);
 		pthread_mutex_unlock(&(philo->next->fork));
 		pthread_mutex_unlock(&(philo->fork));
-		philo->n_meals++;
-		if (philo->max_tto_eat && philo->max_tto_eat * philo->id <= philo->n_meals)
-		{
-			philo->check = 1;
-			break ;
-		}
-		print(in_time(), "is sleeping", philo);
-		usleep(philo->time_to_sleep * 1000);
-
-		print(in_time(), "is thinking", philo);
+		if (philo->max_tto_eat && philo->max_tto_eat < philo->n_meals)
+			break;
+		print("is sleeping", philo);
+		my_sleep(philo, philo->time_to_sleep);
+		print("is thinking", philo);
 	}
 	return NULL;
+}
+
+void	ft_free(t_philo *philo)
+{
+	int	i;
+
+	i = 0;
+	while (i < philo->n_philo)
+	{
+		free(philo);
+		philo = philo->next;
+		i++;
+	}
 }
 
 void init_philo(t_philo *philo)
@@ -69,43 +81,51 @@ void init_philo(t_philo *philo)
 	t_philo *tmp;
 	pthread_mutex_t print;
 	pthread_mutex_init(&print, NULL);
-	
+
 	int i;
 
 	i = 0;
 	tmp = philo;
-
+	
 	while (i < philo->n_philo)
 	{
-		usleep(1000);	
-		tmp->print = &print;
-		pthread_mutex_init(&(tmp->fork), NULL);
-		tmp = tmp->next;
+		// usleep(1000);
+		philo->print = &print;
+		philo->current = get_time();
+		philo->last_meal = get_time();
+		pthread_mutex_init(&(philo->fork), NULL);
+		pthread_mutex_init(&(philo->eat), NULL);
+		philo = philo->next;
 		i++;
 	}
 	i = 0;
 	while (i < philo->n_philo)
 	{
-		if (pthread_create(&(tmp)->philos, NULL, &routin, tmp) == -1)
+		if (pthread_create(&(philo)->philos, NULL, &routin, philo) == -1)
 			return ;
 		usleep(50);
-		tmp = tmp->next;
+		philo = philo->next;
 		i++;
 	}
-	usleep(philo->time_to_eat);
-	unsigned long long res;
+	// usleep(philo->time_to_eat * 1000);
+
 	while (1)
 	{
-		res = in_time() - philo->last_meal;
-		if (philo->check == 1)
+		if (philo->max_tto_eat && check_eating(philo))
+		{
+			ft_free(philo);
 			break ;
-		else if (philo->time_to_die <= res)
+		}
+		pthread_mutex_lock(&(philo)->eat);
+		if (philo->time_to_die <= get_time() - philo->last_meal)
 		{
 			pthread_mutex_lock(philo->print);
-			printf("%zu\t%d died\n",in_time(), philo->id);
-			return ;
+			printf("%zu	%d died\n", in_time(philo->current), philo->id);
+			ft_free(philo);
+			break ;
 		}
-		usleep(20);
+		pthread_mutex_unlock(&(philo)->eat);
+		usleep(500);
 		philo = philo->next;
 	}
 }
@@ -116,7 +136,7 @@ int main(int ac, char **av)
 	int n_philos;
 	t_philo *philo;
 	if (ac < 5 || ac > 6)
-		return(write(2, "Error\n", 7), 1);
+		return (write(2, "Error\n", 7), 1);
 	philo = NULL;
 	n_philos = ft_atoi(av[1]);
 	while (i < n_philos)
@@ -127,5 +147,6 @@ int main(int ac, char **av)
 	}
 	ft_lstlast(philo)->next = philo;
 	init_philo(philo);
+	free(philo);
 	return (0);
 }

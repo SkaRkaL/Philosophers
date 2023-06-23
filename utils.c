@@ -1,9 +1,16 @@
 #include "philo.h"
 
-unsigned long	in_time(void)
+unsigned long	get_time(void)
 {
 	struct timeval	time;
-	static unsigned long long init_time;
+
+	gettimeofday(&time, NULL);
+	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
+}
+
+unsigned long	in_time(unsigned long var)
+{
+	struct timeval	time;
 	unsigned long long	l;
 	unsigned long long	s;
 	unsigned long long	u;
@@ -11,10 +18,6 @@ unsigned long	in_time(void)
 	gettimeofday(&time, NULL);
 	s = (time.tv_sec * 1000);
 	u = (time.tv_usec / 1000);
-	l = s + u;
-	if(init_time == 0)
-	{
-		init_time = l;
-	}
-	return (l - init_time);
+	l = s + u; 
+	return (l - var);
 }
