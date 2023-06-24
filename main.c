@@ -101,9 +101,9 @@ void init_philo(t_philo *philo)
 	i = 0;
 	while (i < philo->n_philo)
 	{
-		if (pthread_create(&(philo)->philos, NULL, &routin, philo) == -1)
-			return ;
+		pthread_create(&(philo)->philos, NULL, &routin, philo);
 		usleep(50);
+		pthread_detach(philo->philos);
 		philo = philo->next;
 		i++;
 	}
