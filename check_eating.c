@@ -1,9 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_eating.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: sakarkal <sakarkal@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/06/26 01:44:09 by sakarkal          #+#    #+#             */
+/*   Updated: 2023/06/26 01:48:32 by sakarkal         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo.h"
 
-int check_eating(t_philo *philo)
+int	check_eating(t_philo *philo)
 {
-	int i;
-	int ate;
+	int	i;
+	int	ate;
 
 	i = 0;
 	ate = 0;
