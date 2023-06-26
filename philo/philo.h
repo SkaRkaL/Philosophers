@@ -6,7 +6,7 @@
 /*   By: sakarkal <sakarkal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 01:44:20 by sakarkal          #+#    #+#             */
-/*   Updated: 2023/06/26 01:46:56 by sakarkal         ###   ########.fr       */
+/*   Updated: 2023/06/26 07:12:21 by sakarkal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ unsigned long	in_time(unsigned long var);
 unsigned long	get_time(void);
 int				my_sleep(t_philo *philo, unsigned int t_todo);
 int				check_eating(t_philo *philo);
+int				parse_arg(char **av);
 
 // ---------------------------------------
 

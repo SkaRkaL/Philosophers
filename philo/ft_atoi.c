@@ -6,11 +6,41 @@
 /*   By: sakarkal <sakarkal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 01:44:12 by sakarkal          #+#    #+#             */
-/*   Updated: 2023/06/26 01:44:13 by sakarkal         ###   ########.fr       */
+/*   Updated: 2023/06/26 07:24:18 by sakarkal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philo.h"
+
+static int	ft_isdigit(char *c)
+{
+	int	i;
+
+	i = 0;
+	if (!c)
+		return (1);
+	while (c[i])
+	{
+		if (c[i] < 48 || c[i] > 57)
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+int	parse_arg(char **av)
+{
+	int	i;
+
+	i = 1;
+	while (av[i])
+	{
+		if (ft_isdigit(av[i]))
+			return (1);
+		i++;
+	}
+	return (0);
+}
 
 long	ft_atoi(char *str)
 {

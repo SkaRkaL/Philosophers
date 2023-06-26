@@ -6,7 +6,7 @@
 /*   By: sakarkal <sakarkal@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/06/26 01:44:14 by sakarkal          #+#    #+#             */
-/*   Updated: 2023/06/26 01:48:25 by sakarkal         ###   ########.fr       */
+/*   Updated: 2023/06/26 07:23:32 by sakarkal         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,20 +68,20 @@ void	killer(t_philo *philo)
 
 void	init_philo(t_philo *philo)
 {
-	pthread_mutex_t	print;
+	pthread_mutex_t	*print;
 	int				i;
 
-	i = 0;
-	pthread_mutex_init(&print, NULL);
-	while (i < philo->n_philo)
+	i = -1;
+	print = malloc(sizeof(pthread_mutex_t));
+	pthread_mutex_init(print, NULL);
+	while (++i < philo->n_philo)
 	{
-		philo->print = &print;
+		philo->print = print;
 		philo->current = get_time();
 		philo->last_meal = get_time();
 		pthread_mutex_init(&(philo->fork), NULL);
 		pthread_mutex_init(&(philo->eat), NULL);
 		philo = philo->next;
-		i++;
 	}
 	i = 0;
 	while (i < philo->n_philo)
@@ -106,6 +106,8 @@ int	main(int ac, char **av)
 		return (write(2, "Error\n", 7), 1);
 	philo = NULL;
 	n_philos = ft_atoi(av[1]);
+	if (parse_arg(av))
+		return (1);
 	if (n_philos == 0)
 		return (-1);
 	while (i < n_philos)
